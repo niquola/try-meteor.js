@@ -1,0 +1,43 @@
+<head>
+  <title>gcht</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="page-header">try { Meteor }</h1>
+    <div class="row">
+      <div class="span2">
+        {{> snip }}
+      </div>
+      <div class="span10">
+        <div id="out" class="well"></div>
+        <hr/>
+        {{> editor}}
+      </div>
+    </div>
+  </div>
+</body>
+
+<template name="editor">
+<input id="title" class="span6" placeholder="title" value="{{title}}"/>
+</br>
+<textarea id="code" class="span12" style="height:290px;">{{script}}</textarea>
+<div class="form-actions">
+  <button class="btn" id="eval">Run</button>
+  <button class="btn" id="save">Save</button>
+  <button class="btn" id="clear">Clear</button>
+</div>
+</template>
+
+<template name="snip">
+<ul class="nav nav-list well">
+  <li class="nav-header"> Sinps </li>
+  {{#each snipets}}
+  <li>
+  <a href="#{{_id}}" class="item">{{title}}</a>
+  </li>
+  {{/each}}
+  <li class="divider"></li>
+  <li><button class="btn btn-mini" id="add">New</button></li>
+</ul>
+</template>
