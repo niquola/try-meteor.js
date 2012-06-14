@@ -4,15 +4,18 @@
 
 <body>
   <div class="container">
-    <h1 class="page-header">try { Meteor }</h1>
+    <h1 class="page-header">
+      try { Meteor }
+      <a class="btn btn-mini btn-primary" href="https://github.com/niquola/try-meteor.js">src</a>
+    </h1>
     <div class="row">
-      <div class="span2">
-        {{> snip }}
-      </div>
-      <div class="span10">
+      <div class="span9">
         <div id="out" class="well"></div>
         <hr/>
         {{> editor}}
+      </div>
+      <div class="span3">
+        {{> snip }}
       </div>
     </div>
   </div>
@@ -21,14 +24,14 @@
 <template name="editor">
 <input id="title" class="span6" placeholder="title" value="{{title}}"/>
 </br>
-<textarea id="code" class="span12" style="height:290px;">{{script}}</textarea>
+<textarea id="code" class="span8" style="height:290px;">{{script}}</textarea>
 <div class="form-actions">
   <button class="btn" id="eval">Run</button>
 </div>
 </template>
 
 <template name="snip">
-<ul class="nav nav-list well">
+<ul id="nav" class="nav nav-list well">
   <li class="nav-header"> Sinps </li>
   {{#each snipets}}
   <li>

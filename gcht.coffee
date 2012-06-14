@@ -8,6 +8,10 @@ Meteor.methods
 if Meteor.is_client
   window.Snips = Snips
 
+  getCurrentSnip =->
+    snip_id = Session.get('current-snip-id')
+    snip = Snips.findOne({_id:snip_id})
+
   Template.snip.snipets = ->
     Snips.find({},{sort:{title:1}})
 
@@ -19,15 +23,15 @@ if Meteor.is_client
       el = evt.target
       snip_id = $(el).attr('href').replace(/^#/,'')
       Session.set('current-snip-id',snip_id)
+      $('#nav .active').removeClass('active')
+      $(el).closest('li').addClass('active')
 
   Template.editor.title =->
-    snip_id = Session.get('current-snip-id')
-    snip = Snips.findOne({_id:snip_id})
+    snip = getCurrentSnip()
     snip && snip.title
 
   Template.editor.script =->
-    snip_id = Session.get('current-snip-id')
-    snip = Snips.findOne({_id:snip_id})
+    snip = getCurrentSnip()
     snip && snip.script
 
   evalCode =->
@@ -41,8 +45,7 @@ if Meteor.is_client
   saveSnip =->
     title = $('#title').val()
     script = $('#code').val()
-    snip_id = Session.get('current-snip-id')
-    snip = Snips.findOne({_id:snip_id})
+    snip = getCurrentSnip()
     if title && snip
       Snips.update({_id:snip._id},{$set: {title: title, script: script}})
 
