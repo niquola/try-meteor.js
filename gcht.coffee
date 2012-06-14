@@ -1,5 +1,9 @@
 Snips = new Meteor.Collection('snips')
 
+Meteor.methods
+  remote: ()->
+    return new Date + ' from server'
+
 
 if Meteor.is_client
   window.Snips = Snips
@@ -10,19 +14,20 @@ if Meteor.is_client
   Template.snip.events =
     "click #add": (evt)->
       snip = Snips.insert(title:'New')
-      Session.set('current-snip',snip)
+      Session.set('current-snip-id',snip._id)
     "click a.item": (evt)->
       el = evt.target
-      id = $(el).attr('href').replace(/^#/,'')
-      snip = Snips.findOne(_id:id)
-      Session.set('current-snip',snip)
+      snip_id = $(el).attr('href').replace(/^#/,'')
+      Session.set('current-snip-id',snip_id)
 
   Template.editor.title =->
-    snip = Session.get('current-snip')
+    snip_id = Session.get('current-snip-id')
+    snip = Snips.findOne({_id:snip_id})
     snip && snip.title
 
   Template.editor.script =->
-    snip = Session.get('current-snip')
+    snip_id = Session.get('current-snip-id')
+    snip = Snips.findOne({_id:snip_id})
     snip && snip.script
 
   evalCode =->
@@ -36,17 +41,19 @@ if Meteor.is_client
   saveSnip =->
     title = $('#title').val()
     script = $('#code').val()
-    snip = Session.get('current-snip')
+    snip_id = Session.get('current-snip-id')
+    snip = Snips.findOne({_id:snip_id})
     if title && snip
       Snips.update({_id:snip._id},{$set: {title: title, script: script}})
 
   Template.editor.events =
     "keypress #code":(evt)->
       evalCode() if evt.which == 10 and evt.ctrlKey
-      saveSnip()
-    "keypress #title": saveSnip
+      Meteor.setTimeout(saveSnip,0)
+    "keypress #title": -> Meteor.setTimeout(saveSnip,0)
+    "change #title": -> saveSnip
+    "change #code": -> saveSnip
     "click #eval": evalCode
-    "click #save":-> saveSnip
 
   Meteor.startup ->
     #Session.set('current-snip') = Snips.findOne()
